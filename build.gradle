@@ -29,3 +29,15 @@ android {
     targetSdkVersion 18
   }
 }
+
+android.libraryVariants.all { variant ->
+  def name = variant.buildType.name
+  if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+    return; // Skip debug builds.
+  }
+  task plainOldJar(type: Jar, dependsOn: variant.javaCompile) {
+    extension = 'jar'
+    from variant.javaCompile.destinationDir
+  }
+  artifacts.add('archives', plainOldJar);
+}
